@@ -32,17 +32,17 @@ X_questions = vectorizer.transform(test['query']).astype(np.float32)
 X_docs = load_npz(doc_file)
 
 sim_matrix = cosine_similarity(X_questions, X_docs)
-all_predictions = np.argsort(-sim_matrix, axis=1)[:, :10].tolist()
-all_targets = list(range(len(test['query'])))
+predictions = np.argsort(-sim_matrix, axis=1)[:, :10].tolist()
+targets = list(range(len(test['query'])))
 
 del X_questions, sim_matrix, X_docs
 gc.collect()
 
 metrics = {
-    'recall@1': recall_at_k(all_targets, all_predictions, 1),
-    'recall@3': recall_at_k(all_targets, all_predictions, 3),
-    'recall@10': recall_at_k(all_targets, all_predictions, 10),
-    'mrr': mrr_score(all_targets, all_predictions)
+    'recall@1': recall_at_k(targets, predictions, 1),
+    'recall@3': recall_at_k(targets, predictions, 3),
+    'recall@10': recall_at_k(targets, predictions, 10),
+    'mrr': mrr_score(targets, predictions)
 }
 
 print(f"""Recall@1: {metrics['recall@1']:.6f}
