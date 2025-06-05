@@ -1,18 +1,17 @@
 import numpy as np
 
-def recall_at_k(targets, predictions, k):
-    hits = []
-    for target, pred in zip(targets, predictions):
-        hit = 1 if target in pred[:k] else 0
-        hits.append(hit)
-    return np.mean(hits)
+def recall_at_k(targets, predict, k):
+    hit_count = 0
+    for true_id, pred_list in zip(targets, predict):
+        top_k = pred_list[:k]
+        if true_id in top_k:
+            hit_count += 1
+    return hit_count / len(targets)
 
-def mrr_score(targets, predictions):
-    reciprocal_ranks = []
-    for target, pred in zip(targets, predictions):
-        if target in pred:
-            rank = pred.index(target) + 1
-            reciprocal_ranks.append(1 / rank)
-        else:
-            reciprocal_ranks.append(0)
-    return np.mean(reciprocal_ranks)
+def mrr_score(targets, predict):
+    reciprocal_sum = 0.0
+    for true_id, pred_list in zip(targets, predict):
+        if true_id in pred_list:
+            rank = pred_list.index(true_id) + 1
+            reciprocal_sum += 1.0 / rank
+    return reciprocal_sum / len(targets)
